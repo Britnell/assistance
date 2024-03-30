@@ -1,0 +1,26 @@
+---
+import ChatV from "../comp/chat.vue";
+const token = import.meta.env.HUGGINGFACE_TOKEN;
+console.log({ token });
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="globals" x-globals={JSON.stringify({ huggingfacetoken: token })}>
+      <script>
+        const attr = window.globals?.getAttribute("x-globals");
+        try {
+          const data = JSON.parse(attr);
+          window.huggingfacetoken = data.huggingfacetoken;
+        } catch (e) {}
+      </script>
+    </div>
+    <ChatV huggingfacetoken={token} client:load />
+  </body>
+</html>
