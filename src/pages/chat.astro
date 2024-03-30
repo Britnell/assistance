@@ -1,7 +1,6 @@
 ---
 import ChatV from "../comp/chat.vue";
-const token = import.meta.env.HUGGINGFACE_TOKEN;
-console.log({ token });
+const huggingfacetoken = import.meta.env.HUGGINGFACE_TOKEN;
 ---
 
 <!doctype html>
@@ -12,7 +11,7 @@ console.log({ token });
     <title>Document</title>
   </head>
   <body>
-    <div id="globals" x-globals={JSON.stringify({ huggingfacetoken: token })}>
+    <div id="globals" x-globals={JSON.stringify({ huggingfacetoken })}>
       <script>
         const attr = window.globals?.getAttribute("x-globals");
         try {

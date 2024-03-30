@@ -1,6 +1,8 @@
-export const hfreq = (inputs: string, token: string) => {
+const base = "https://api-inference.huggingface.co/models/";
+
+export const chatCompletion = (inputs: string, token: string) => {
   const model = "mistralai/Mixtral-8x7B-Instruct-v0.1";
-  const base = "https://api-inference.huggingface.co/models/";
+
   return fetch(base + model, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -25,4 +27,18 @@ export const hfreq = (inputs: string, token: string) => {
     .then((res) =>
       typeof res === "string" ? { error: res } : { data: res[0].generated_text }
     );
+};
+
+export const whisperReq = async (file: File, token: string) => {
+  const model = "openai/whisper-large-v3";
+  const buffer = await file.arrayBuffer();
+
+  return fetch(base + model, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      // "Content-Type": "application/json",
+    },
+    method: "POST",
+    body: buffer,
+  });
 };

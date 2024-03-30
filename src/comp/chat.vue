@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, defineProps } from "vue";
-import { hfreq } from "./hugging";
+import { chatCompletion } from "./hugging";
 
 type Chat = {
   instruction: string;
@@ -27,11 +27,8 @@ const submit = async () => {
   if (!prompt) return;
   ip.value = "";
   const inst = renderChat() + renderInstruct(prompt);
-  const resp = await hfreq(inst, props.huggingfacetoken);
-  if (resp.error) {
-    console.log(resp.error);
-    return;
-  }
+  const resp = await chatCompletion(inst, props.huggingfacetoken);
+  if (resp.error) return console.log(resp.error);
   conv.value = [...conv.value, { instruction: prompt, response: resp.data }];
   //   console.log({ prompt, inst }, resp.data);
 };
