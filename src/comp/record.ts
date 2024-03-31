@@ -24,7 +24,7 @@ export const useRecorder = (rec: Ref<RecordState>) => {
       .catch((err) => console.log(err));
     if (!stream) return;
 
-    recorder = new MediaRecorder(stream);
+    recorder = new MediaRecorder(stream, {});
 
     recorder.ondataavailable = ({ data }) => {
       chunks.push(data);
@@ -32,7 +32,9 @@ export const useRecorder = (rec: Ref<RecordState>) => {
 
     recorder.onstop = () => {
       //   const blob = new Blob(chunks, { type: "audio/webm" });
+
       const file = new File(chunks, "rec", { type: chunks[0].type });
+      console.log(file.type);
       data.value = file;
       chunks = [];
     };
