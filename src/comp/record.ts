@@ -8,12 +8,30 @@ declare global {
 
 export type RecordState = "idle" | "start" | "stop" | "finish";
 
+const getMimeType = () => {
+  const types = [
+    "audio/webm",
+    "audio/mp4",
+    "audio/ogg",
+    "audio/wav",
+    "audio/aac",
+  ];
+  for (let i = 0; i < types.length; i++) {
+    if (MediaRecorder.isTypeSupported(types[i])) {
+      return types[i];
+    }
+  }
+  return undefined;
+};
+
 export const useRecorder = (rec: Ref<RecordState>) => {
   const data = ref<File | null>(null);
 
   let recorder: MediaRecorder | null = null;
   let chunks: Blob[] = [];
   let state = "";
+
+  let mimeType = getMimeType();
 
   const createRecorder = async () => {
     const stream = await navigator.mediaDevices
@@ -24,7 +42,11 @@ export const useRecorder = (rec: Ref<RecordState>) => {
       .catch((err) => console.log(err));
     if (!stream) return;
 
-    recorder = new MediaRecorder(stream, {});
+    mimeType = getMimeType();
+
+    recorder = new MediaRecorder(stream, {
+      mimeType,
+    });
 
     recorder.ondataavailable = ({ data }) => {
       chunks.push(data);
@@ -32,10 +54,7 @@ export const useRecorder = (rec: Ref<RecordState>) => {
 
     recorder.onstop = () => {
       //   const blob = new Blob(chunks, { type: "audio/webm" });
-
-      const file = new File(chunks, "rec", { type: chunks[0].type });
-      console.log(file.type);
-      data.value = file;
+      data.value = new File(chunks, "rec", { type: mimeType });
       chunks = [];
     };
   };

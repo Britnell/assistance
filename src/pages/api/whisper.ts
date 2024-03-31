@@ -12,7 +12,7 @@ export const POST: APIRoute = async ({ request }) => {
     multilingual: false,
     quantized: false,
     subtask: null, // 'transcribe'
-    language: "english", // 'english'
+    language: null, // 'english'
   });
   console.log(x);
 
