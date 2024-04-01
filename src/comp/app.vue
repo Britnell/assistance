@@ -2,6 +2,7 @@
 import { ref, defineProps } from "vue";
 import { chatCompletion } from "./hugging";
 import { chatRef } from "../lib/hooks";
+import Convo from "./convo.vue";
 
 const conv = chatRef();
 const ip = ref("");
@@ -23,16 +24,7 @@ const submit = async () => {
   <div class="max-w-[600px] mx-auto">
     <h1>Chat</h1>
     <main class="space-y-8 mt-8">
-      <div v-for="chat in conv" class="flex flex-col gap-3">
-        <p class="inline-block py-1 px-3 rounded-lg bg-blue-100 self-start">
-          {{ chat.instruction }}
-        </p>
-        <p
-          v-if="chat.response"
-          class="inline-block py-1 px-3 rounded-lg bg-gray-100 self-end"
-          v-html="chat.response"
-        ></p>
-      </div>
+      <Convo :conv="conv" />
       <form @submit.prevent="submit">
         <div class="mt-6 flex gap-2">
           <input
