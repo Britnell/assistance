@@ -12,11 +12,9 @@ watchEffect(async () => {
   const file = data.value;
   if (!file) return;
 
-  console.log(file);
   const resp = await whisperReq(file, props.huggingfacetoken).then((res) =>
     res.ok ? res.json() : res.text()
   );
-  console.log(resp);
 });
 
 const setRec = (v: RecordState) => (rec.value = v);

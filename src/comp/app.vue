@@ -3,6 +3,7 @@ import { ref, defineProps } from "vue";
 import { chatCompletion } from "./hugging";
 import { chatRef, configRef } from "../lib/hooks";
 import Convo from "./convo.vue";
+import AudioRec from "./audio.vue";
 
 const conv = chatRef();
 const config = configRef();
@@ -10,9 +11,9 @@ const ip = ref("");
 
 const props = defineProps(["huggingfacetoken"]);
 
-const submit = async () => {
-  const prompt = ip.value;
+const answerPrompt = async (prompt: string) => {
   if (!prompt) return;
+
   conv.value = [...conv.value, { instruction: prompt, response: "" }];
   ip.value = "";
   const resp = await chatCompletion(conv.value, {
@@ -24,6 +25,8 @@ const submit = async () => {
 };
 
 const clear = () => (conv.value = []);
+
+//
 </script>
 
 <template>
@@ -43,9 +46,17 @@ const clear = () => (conv.value = []);
             <option value="100">medium</option>
             <option value="250">long</option>
           </select>
+          <div>
+            <!-- <label for=""> play audio
+              <input type="checkbox"  />
+            </label> -->
+          </div>
         </div>
         <div class="grow">
-          <form @submit.prevent="submit">
+          <form
+            @submit.prevent="() => answerPrompt(ip)"
+            v-if="config.input === 'text'"
+          >
             <div class="w-full flex gap-2 items-start">
               <textarea
                 name="prompt"
@@ -59,8 +70,22 @@ const clear = () => (conv.value = []);
               <button class="bg-blue-100">Submit</button>
             </div>
           </form>
+          <div v-else>
+            <AudioRec
+              :huggingfacetoken="huggingfacetoken"
+              @prompt="answerPrompt"
+            />
+          </div>
         </div>
-        <div class="x">[audio]</div>
+        <div class="x">
+          <button
+            v-if="config.input === 'text'"
+            @click="() => (config.input = 'audio')"
+          >
+            audio
+          </button>
+          <button v-else @click="() => (config.input = 'text')">text</button>
+        </div>
       </div>
     </main>
   </div>

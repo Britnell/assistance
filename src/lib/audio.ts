@@ -139,8 +139,8 @@ export const readFile = async (file: File): Promise<ArrayBuffer | null> => {
   });
 };
 
-export const playBlob = (file: File) => {
-  const blob = new Blob([file], { type: "audio/webm" });
+export const playBlob = (blob: Blob) => {
+  // const blob = new Blob([file], { type: "audio/webm" });
   const uri = window.URL.createObjectURL(blob);
   const audio = new Audio(uri);
   audio.play();

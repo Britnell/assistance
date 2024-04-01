@@ -27,8 +27,6 @@ export const chatCompletion = (
   const { token, max_new_tokens } = config;
   const inputs = renderChat(conv);
 
-  console.log({ max_new_tokens });
-
   return fetch(base + model, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -58,7 +56,8 @@ export const chatCompletion = (
 
 export const instructRequest = (inputs: string, token: string) => {};
 
-export const whisperReq = async (file: File, token: string) => {
+export const whisperReq = async (blob: Blob, token: string) => {
+  const file = new File([blob], "audio", { type: blob.type });
   const model = "openai/whisper-large-v3";
   const buffer = await file.arrayBuffer();
 

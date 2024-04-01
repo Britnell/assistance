@@ -6,7 +6,7 @@ declare global {
   }
 }
 
-export type RecordState = "idle" | "start" | "stop" | "finish";
+export type RecordState = "idle" | "start" | "stop" | "finish" | "cancel";
 
 const getMimeType = () => {
   const types = [
@@ -25,11 +25,10 @@ const getMimeType = () => {
 };
 
 export const useRecorder = (rec: Ref<RecordState>) => {
-  const data = ref<File | null>(null);
+  const data = ref<Blob | null>(null);
 
   let recorder: MediaRecorder | null = null;
   let chunks: Blob[] = [];
-  let state = "";
 
   let mimeType = getMimeType();
 
@@ -54,7 +53,7 @@ export const useRecorder = (rec: Ref<RecordState>) => {
 
     recorder.onstop = () => {
       //   const blob = new Blob(chunks, { type: "audio/webm" });
-      data.value = new File(chunks, "rec", { type: mimeType });
+      data.value = new Blob(chunks, { type: mimeType });
       chunks = [];
     };
   };
@@ -62,16 +61,15 @@ export const useRecorder = (rec: Ref<RecordState>) => {
   onMounted(() => createRecorder());
 
   watch(rec, (val, prev) => {
-    console.log({ val });
+    if (val === "start") recorder?.start();
+    // if (prev !== "stop") {
+    //   return;
+    // }
 
-    if (prev !== "stop") {
-      if (val === "start") recorder?.start();
-      return;
-    }
-
-    if (val === "start") recorder?.resume();
+    // if (val === "start") recorder?.resume();
     if (val === "stop") recorder?.pause();
     if (val === "finish") recorder?.stop();
+    if (val === "cancel") recorder?.stop();
   });
 
   return { data };
