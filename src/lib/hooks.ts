@@ -29,9 +29,11 @@ export type Chat = {
 export const chatRef = () => cachedRef<Chat[]>("conversation", []);
 
 export type Config = {
-  length: number;
+  length: string;
+  input: "text" | "audio";
 };
 export const configRef = () =>
-  cachedRef("config", {
+  cachedRef<Config>("config", {
     length: "100",
+    input: "audio",
   });
