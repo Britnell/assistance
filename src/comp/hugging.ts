@@ -1,6 +1,27 @@
+import type { Chat } from "../lib/hooks";
+
 const base = "https://api-inference.huggingface.co/models/";
 
-export const chatCompletion = (inputs: string, token: string) => {
+const renderChat = (conv: Chat[]) => {
+  return (
+    "<s>" +
+    conv
+      .map(
+        (chat) =>
+          `[INST] ${chat.instruction} [/INST]${
+            chat.response ? ` ${chat.response}</s>` : ""
+          }`
+      )
+      .join("")
+  );
+};
+
+export const chatCompletion = (conv: Chat[], token: string) => {
+  const inputs = renderChat(conv);
+  return instructRequest(inputs, token);
+};
+
+export const instructRequest = (inputs: string, token: string) => {
   const model = "mistralai/Mixtral-8x7B-Instruct-v0.1";
 
   return fetch(base + model, {

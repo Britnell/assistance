@@ -1,0 +1,16 @@
+---
+import ChatV from "../comp/app.vue";
+const huggingfacetoken = import.meta.env.HUGGINGFACE_TOKEN;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <ChatV huggingfacetoken={huggingfacetoken} client:only="vue" />
+  </body>
+</html>
