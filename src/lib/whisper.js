@@ -29,27 +29,6 @@ class PipelineFactory {
   }
 }
 
-// self.addEventListener("message", async (event) => {
-//     const message = event.data;
-//     // Do some work...
-//     // TODO use message data
-//     let transcript = await transcribe(
-//         message.audio,
-//         message.model,
-//         message.multilingual,
-//         message.quantized,
-//         message.subtask,
-//         message.language,
-//     );
-//     if (transcript === null) return;
-//     // Send the result back to the main thread
-//     self.postMessage({
-//         status: "complete",
-//         task: "automatic-speech-recognition",
-//         data: transcript,
-//     });
-// });
-
 class AutomaticSpeechRecognitionPipelineFactory extends PipelineFactory {
   static task = "automatic-speech-recognition";
   static model = null;
@@ -127,7 +106,8 @@ export const transcribe = async (audio, config) => {
       force_full_sequences: false,
     });
 
-    // partials // console.log("CALLBACK====", data);
+    // partials -
+    // console.log("UPDATE", data);
   };
 
   // Actually run transcription
@@ -137,6 +117,7 @@ export const transcribe = async (audio, config) => {
     do_sample: false,
 
     // Sliding window
+
     chunk_length_s: isDistilWhisper ? 20 : 30,
     stride_length_s: isDistilWhisper ? 3 : 5,
 
@@ -157,8 +138,30 @@ export const transcribe = async (audio, config) => {
     //   task: "automatic-speech-recognition",
     //   data: error,
     // });
+    console.log(error);
     return error.message;
   });
 
   return output;
 };
+
+// self.addEventListener("message", async (event) => {
+//     const message = event.data;
+//     // Do some work...
+//     // TODO use message data
+//     let transcript = await transcribe(
+//         message.audio,
+//         message.model,
+//         message.multilingual,
+//         message.quantized,
+//         message.subtask,
+//         message.language,
+//     );
+//     if (transcript === null) return;
+//     // Send the result back to the main thread
+//     self.postMessage({
+//         status: "complete",
+//         task: "automatic-speech-recognition",
+//         data: transcript,
+//     });
+// });

@@ -9,6 +9,7 @@ export const POST: APIRoute = async ({ request }) => {
 
   const x = await transcribe(audioBuffer, {
     model: "Xenova/whisper-tiny",
+    // model: "Xenova/whisper-base",
     multilingual: false,
     quantized: false,
     subtask: null, // 'transcribe'
