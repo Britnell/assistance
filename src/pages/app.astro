@@ -10,6 +10,31 @@ const huggingfacetoken = import.meta.env.HUGGINGFACE_TOKEN;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
   </head>
+  <style is:global>
+    @tailwind base;
+    @tailwind components;
+    @tailwind utilities;
+
+    @layer base {
+      button,
+      .button,
+      select,
+      input {
+        @apply py-1 px-3 rounded-lg;
+      }
+
+      button,
+      .button {
+        @apply bg-gray-100;
+      }
+    }
+    * {
+      outline: none;
+    }
+    *:focus-visible {
+      outline: 1px solid rgba(0, 0, 0, 0.5);
+    }
+  </style>
   <body>
     <ChatV huggingfacetoken={huggingfacetoken} client:only="vue" />
   </body>

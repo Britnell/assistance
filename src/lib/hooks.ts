@@ -27,3 +27,11 @@ export type Chat = {
 
 // export const chatRef = () => ref<Chat[]>([]);
 export const chatRef = () => cachedRef<Chat[]>("conversation", []);
+
+export type Config = {
+  length: number;
+};
+export const configRef = () =>
+  cachedRef("config", {
+    length: "100",
+  });

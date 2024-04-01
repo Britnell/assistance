@@ -16,13 +16,18 @@ const renderChat = (conv: Chat[]) => {
   );
 };
 
-export const chatCompletion = (conv: Chat[], token: string) => {
-  const inputs = renderChat(conv);
-  return instructRequest(inputs, token);
-};
-
-export const instructRequest = (inputs: string, token: string) => {
+export const chatCompletion = (
+  conv: Chat[],
+  config: {
+    token: string;
+    max_new_tokens?: string;
+  }
+) => {
   const model = "mistralai/Mixtral-8x7B-Instruct-v0.1";
+  const { token, max_new_tokens } = config;
+  const inputs = renderChat(conv);
+
+  console.log({ max_new_tokens });
 
   return fetch(base + model, {
     headers: {
@@ -32,15 +37,16 @@ export const instructRequest = (inputs: string, token: string) => {
     method: "POST",
     body: JSON.stringify({
       inputs: inputs,
+      parameters: {
+        return_full_text: false,
+        temperature: 0.8,
+        max_new_tokens: max_new_tokens ? parseInt(max_new_tokens) : 250,
+        early_stopping: true,
+      },
       options: {
-        dont_load_model: false,
         use_cache: true,
         wait_for_model: false,
-      },
-      parameters: {
-        max_new_tokens: 100,
-        return_full_text: false,
-        temperature: 0.5,
+        dont_load_model: false,
       },
     }),
   })
@@ -49,6 +55,8 @@ export const instructRequest = (inputs: string, token: string) => {
       typeof res === "string" ? { error: res } : { data: res[0].generated_text }
     );
 };
+
+export const instructRequest = (inputs: string, token: string) => {};
 
 export const whisperReq = async (file: File, token: string) => {
   const model = "openai/whisper-large-v3";

@@ -15,4 +15,10 @@ const { conv } = defineProps(["conv"]);
       v-html="chat.response"
     ></p>
   </div>
+  <p
+    v-if="conv.length === 0"
+    class="inline-block py-1 px-3 rounded-lg bg-gray-100 self-center opacity-60"
+  >
+    Empty Chat
+  </p>
 </template>

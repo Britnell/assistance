@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { ref, defineProps } from "vue";
 import { chatCompletion } from "./hugging";
-import { chatRef } from "../lib/hooks";
+import { chatRef, configRef } from "../lib/hooks";
 import Convo from "./convo.vue";
 
 const conv = chatRef();
+const config = configRef();
 const ip = ref("");
 
 const props = defineProps(["huggingfacetoken"]);
@@ -14,29 +15,53 @@ const submit = async () => {
   if (!prompt) return;
   conv.value = [...conv.value, { instruction: prompt, response: "" }];
   ip.value = "";
-  const resp = await chatCompletion(conv.value, props.huggingfacetoken);
+  const resp = await chatCompletion(conv.value, {
+    token: props.huggingfacetoken,
+    max_new_tokens: config.value.length,
+  });
   if (resp.error) return console.log(resp.error);
   conv.value[conv.value.length - 1].response = resp.data;
 };
+
+const clear = () => (conv.value = []);
 </script>
 
 <template>
-  <div class="max-w-[600px] mx-auto">
-    <h1>Chat</h1>
-    <main class="space-y-8 mt-8">
-      <Convo :conv="conv" />
-      <form @submit.prevent="submit">
-        <div class="mt-6 flex gap-2">
-          <input
-            name="prompt"
-            placeholder="Enter prompt"
-            v-model="ip"
-            class="grow py-1 px-2 rounded border border-black border-opacity-20 focus-visible:border-opacity-80"
-            autofocus
-          />
-          <button class="bg-blue-100 rounded-lg py-1 px-3">Submit</button>
+  <div class="max-w-page mx-auto">
+    <header class="h-10 flex items-center">
+      <h1>Chat</h1>
+      <button @click="clear" class="ml-auto px-2 text-sm">fresh chat</button>
+    </header>
+    <main class="h-[calc(100svh-2.5rem)] pt-8 grid grid-rows-[1fr_200px]">
+      <div class="overflow-y-auto px-2 flex flex-col gap-6">
+        <Convo :conv="conv" />
+      </div>
+      <div class="flex gap-8 pt-8">
+        <div class="x">
+          <select v-model="config.length" class=" ">
+            <option value="50">short</option>
+            <option value="100">medium</option>
+            <option value="250">long</option>
+          </select>
         </div>
-      </form>
+        <div class="grow">
+          <form @submit.prevent="submit">
+            <div class="w-full flex gap-2 items-start">
+              <textarea
+                name="prompt"
+                placeholder="Enter prompt"
+                v-model="ip"
+                rows="3"
+                class="grow py-1 px-2 rounded border border-black border-opacity-20 focus-visible:border-opacity-80"
+                autofocus
+                x-keypress="shiftenter"
+              ></textarea>
+              <button class="bg-blue-100">Submit</button>
+            </div>
+          </form>
+        </div>
+        <div class="x">[audio]</div>
+      </div>
     </main>
   </div>
 </template>
