@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watchEffect, defineProps, defineEmits } from "vue";
 import { useRecorder, type RecordState } from "./record";
-import { playBlob } from "../lib/audio";
+// import { playBlob } from "../lib/audio";
 import { whisperReq } from "./hugging";
 
 const props = defineProps(["huggingfacetoken"]);

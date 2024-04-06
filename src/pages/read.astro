@@ -1,0 +1,16 @@
+---
+import ReadC from "../comp/read.vue";
+const apikey = import.meta.env.ELEVEN_API_KEY;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>READ</title>
+  </head>
+  <body>
+    <ReadC apikey={apikey} client:only="vue" />
+  </body>
+</html>
