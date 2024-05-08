@@ -23,7 +23,7 @@ export const POST: APIRoute = async ({ request }) => {
 
   //   transcribe();
 
-  return new Response("ok " + Date.now(), {
+  return new Response("ok : " + JSON.stringify(x), {
     status: 200,
   });
 };

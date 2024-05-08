@@ -8,6 +8,25 @@ const rec = ref<RecordState>("idle");
 
 const { data } = useRecorder(rec);
 
+const makeMono = (audioData: AudioBuffer) => {
+  let audio
+  if (audioData.numberOfChannels === 2) {
+    const SCALING_FACTOR = Math.sqrt(2);
+
+    let left = audioData.getChannelData(0);
+    let right = audioData.getChannelData(1);
+
+    audio = new Float32Array(left.length);
+    for (let i = 0; i < audioData.length; ++i) {
+      audio[i] = SCALING_FACTOR * (left[i] + right[i]) / 2;
+    }
+  } else {
+    // If the audio is not stereo, we can just use the first channel:
+    audio = audioData.getChannelData(0);
+  }
+  return audio
+}
+
 watchEffect(async () => {
   const file = data.value;
   if (!file) return;
@@ -18,7 +37,8 @@ watchEffect(async () => {
   let audioData;
 
   if (!audioBuffer) return;
-  audioData = audioBuffer.getChannelData(0);
+  audioData = makeMono(audioBuffer)
+  // audioData = audioBuffer.getChannelData(0);
 
   fetch("/api/whisper", {
     method: "POST",
@@ -43,11 +63,7 @@ const label: { [i: string]: string } = {
       <p>talk</p>
       <p>{{ label[rec] ?? rec }}</p>
       <div class="flex gap-2">
-        <button
-          class="bg-gray-100 px-2 py-1"
-          @mousedown="setRec('start')"
-          @mouseup="setRec('stop')"
-        >
+        <button class="bg-gray-100 px-2 py-1" @mousedown="setRec('start')" @mouseup="setRec('stop')">
           start
         </button>
         <button class="bg-gray-100 px-2 py-1" @click="setRec('finish')">

@@ -66,7 +66,9 @@ export const transcribe = async (audio, config) => {
     transcriber.processor.feature_extractor.config.chunk_length /
     transcriber.model.config.max_source_positions;
 
-  // Storage for chunks to be processed. Initialise with an empty chunk.
+  console.log(transcriber.processor.feature_extractor.config.chunk_length, transcriber.model.config.max_source_positions);
+
+
   let chunks_to_process = [
     {
       tokens: [],
